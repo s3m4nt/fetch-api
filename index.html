@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Sandbox</title>
+    <style>
+        * {
+            margin-top: 15px;
+        }
+
+        button {
+            width: 100%;
+        }
+
+        h1 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        hr {
+            border: 1px dotted lightgray;
+        }
+
+        .apiTitle {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fetch API Sandbox</h1>
+    <button id="reset" style="background-color: red; color: #fff;">Reset the page ...</button>
+    <hr />
+    <button id="getText">Get Text</button>
+    <button id="getJson">Get json data</button>
+    <button id="getPosts">Get jsonplaceholder.com API Data</button>
+    <div id="output"></div>
+
+    <script>
+        document.getElementById('getText').addEventListener('click', getText)
+        document.getElementById('getJson').addEventListener('click', getJson)
+        document.getElementById('getPosts').addEventListener('click', getPosts)
+        document.getElementById('reset').addEventListener('click', cleanIt)
+
+        //  Fetch text data from a text file
+        function getText() {
+            fetch('./sample.txt')
+                .then((res) => {
+                    return res.text()
+                })
+                .then((data) => {
+                    console.log(data);
+                    document.getElementById('output').innerText = data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+        // Fetch json data from a textfile
+        function getJson() {
+            fetch('./users.json')
+                .then((res) => {
+                    return res.json()
+                })
+                .then((data) => {
+                    console.log(data);
+                    let output = '<h2>Users</h2>'
+
+                    data.forEach((user) => {
+                        output += `
+                            <ul style='list-style: none;'>
+                                <li>
+                                    ID: ${user.id}
+                                </li>
+                                <li>
+                                    Name: ${user.name}
+                                </li>
+                                <li>
+                                    Email: ${user.email}
+                                </li>
+                            </ul>
+                            <hr/>
+                        `
+                    });
+                    document.getElementById('output').innerHTML = output
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+
+        function getPosts() {
+            fetch('https://jsonplaceholder.typicode.com/posts')
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    let output = '<h2>Posts</h2>'
+                    data.forEach((post) => {
+                        output += `
+                        <div>
+                            <h2 class="apiTitle">${post.title}</h2>
+                            <p class="apiBody">${post.body}</p>
+                        </div>
+                        <hr />
+                    `
+                    })
+                    document.getElementById('output').innerHTML = output
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+
+        }
+
+        // Reload the entire page
+        function cleanIt() {
+            window.location.reload();
+        }
+    </script>
+</body>
+
+</html>
